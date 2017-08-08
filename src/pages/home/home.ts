@@ -3,24 +3,25 @@ import { NavController,ModalController } from 'ionic-angular';
 
 import { ItemDetailPage } from '../item-detail/item-detail';
 import { AddItemPage } from '../add-item/add-item';
+import { DataProvider } from '../../providers/data/data';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  public items;
+  public items=[];
 
-  constructor(public navCtrl: NavController,public modalCtrl: ModalController) {
-    
+  constructor(public navCtrl: NavController,public modalCtrl: ModalController,public dataService: DataProvider) {
+    this.dataService.getData().then((todos) => {
+      if(todos){
+        this.items = JSON.parse(todos);
+      }
+    })
   }
 
   ionViewDidLoad(){
-    this.items = [
-      {title: 'hi1', description: 'test1'},
-      {title: 'hi2', description: 'test2'},
-      {title: 'hi3', description: 'test3'}
-    ];
+   
   }
 
   addItem(){
@@ -34,6 +35,7 @@ export class HomePage {
   }
   saveItem(item){
     this.items.push(item);
+    this.dataService.save(this.items);
   }
 
   viewItem(item){
